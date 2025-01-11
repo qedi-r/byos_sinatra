@@ -6,12 +6,14 @@ task :rubocop do
   sh 'rubocop --format simple || true'
 end
 
+
 task default: %i[rubocop spec]
 
 desc 'Open an irb session preloaded with the environment'
 task :console do
   require 'rubygems'
   require 'pry'
+  require 'ferrum'
 
   Pry.start
 end

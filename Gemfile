@@ -3,8 +3,11 @@ source 'https://rubygems.org'
 # database, ORM, server
 gem 'activerecord'
 gem 'json'
-gem 'pg'
 gem 'rake'
+gem 'pg'
+gem 'sqlite3'
+gem 'rackup'
+gem 'puma'
 gem 'sinatra-activerecord'
 
 # browser automation
