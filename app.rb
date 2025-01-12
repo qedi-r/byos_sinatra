@@ -1,6 +1,10 @@
 require 'sinatra'
+require 'forme'
 require 'sinatra/activerecord'
 require 'debug'
+require 'pp'
+
+require_relative 'config/initializers/tailwind_form'
 
 current_dir = Dir.pwd
 Dir["#{current_dir}/models/*.rb"].each { |file| require file } # require models
@@ -36,6 +40,18 @@ helpers do
     end
 
     URI.join(base, path).to_s
+  end
+
+  def forme(model, options={}, &block)
+    options[:wrapper] = :div
+    options[:inputs_wrapper] = :div
+    options[:input_defaults] = TailwindConfig.input_defaults
+    options[:label_attr] = TailwindConfig.label_attr
+    options[:before] = TailwindConfig.before
+    options[:after] = TailwindConfig.after
+    options[:labeler] = :explicit
+    PP.pp(options)
+    Forme.form(model, {}, options, &block)
   end
 end
 

@@ -7,6 +7,7 @@ gem 'rake'
 gem 'rackup'
 gem 'puma'
 gem 'sinatra-activerecord'
+gem "forme"
 
 # browser automation
 gem 'ferrum', git: 'https://github.com/rubycdp/ferrum.git', ref: '7cc1a63351232b10f9ce191104efe6e9c72acca2'
@@ -26,3 +27,4 @@ end
 group :development, :test do
   gem 'debug'
 end
+
