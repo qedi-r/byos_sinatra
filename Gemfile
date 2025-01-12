@@ -4,8 +4,6 @@ source 'https://rubygems.org'
 gem 'activerecord'
 gem 'json'
 gem 'rake'
-gem 'pg'
-gem 'sqlite3'
 gem 'rackup'
 gem 'puma'
 gem 'sinatra-activerecord'
@@ -16,6 +14,14 @@ gem 'puppeteer-ruby', '~> 0.45.6'
 
 # image processing
 gem 'mini_magick', '~> 4.12.0'
+
+byos_database = ENV.fetch('BYOS_DATABASE', 'sqlite3')
+if byos_database == 'sqlite3'
+  gem 'sqlite3'
+else
+  gem 'pg'
+end
+
 
 group :development, :test do
   gem 'debug'

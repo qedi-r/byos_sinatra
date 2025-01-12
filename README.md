@@ -10,7 +10,7 @@ with this project you can point a TRMNL (https://usetrmnl.com) device to your ow
 **quickstart**
 
 ```
-bundle # installs gems/libs
+bundle config --set # installs gems/libs
 rake db:setup # creates db + Devices table
 ruby app.rb # => runs server, visit http://localhost:4567
 ```

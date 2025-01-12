@@ -22,6 +22,24 @@ end
 #     'X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept'
 # end
 
+helpers do
+  def url_for(path = '', options = {})
+    scheme = options[:scheme] || request.scheme
+    host = options[:host] || request.host
+    port = options[:port] || request.port
+
+    base = "#{scheme}://#{host}"
+    if scheme == "http"
+      base += ":#{port}" unless port == 80
+    elsif scheme == "https"
+      base += ":#{port}" unless port == 443
+    end
+
+    URI.join(base, path).to_s
+  end
+end
+
+
 # DEVICE MANAGEMENT
 get '/devices/?' do
   @devices = Device.all
@@ -55,6 +73,39 @@ post '/devices' do
   redirect to('/devices')
 end
 
+# SCHEDULE MANAGEMENT
+get '/schedules/?' do
+  @schedules = Schedule.all
+  erb :"schedules/index"
+end
+
+get '/schedules/new' do
+  @schedule = Schedule.new
+  erb :"schedules/new"
+end
+
+get '/schedules/:id/delete' do
+  @schedule = Schedule.find(params[:id])
+  @schedule.destroy
+  redirect to('/schedules')
+end
+
+get '/schedules/:id/edit' do
+  @schedule = Schedule.find(params[:id])
+  erb :"schedules/edit"
+end
+
+patch '/schedules/:id' do
+  device = Schedule.find(params[:id])
+  device.update(params[:schedule])
+  redirect to('/schedules')
+end
+
+post '/schedules' do
+  Schedule.create!(params[:schedule])
+  redirect to('/kevices')
+end
+
 # FIRMWARE SETUP
 get '/api/setup' do
   content_type :json
@@ -64,7 +115,7 @@ get '/api/setup' do
     status = 200
     api_key = @device.api_key
     friendly_id = @device.friendly_id
-    image_url = "http://localhost:4567/images/setup/setup-logo.bmp"
+    image_url =  url_for("/images/setup/setup-logo.bmp")
     message = "Welcome to TRMNL BYOS"
 
     { status:, api_key:, friendly_id:, image_url:, message: }.to_json
