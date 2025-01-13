@@ -42,28 +42,38 @@ helpers do
     URI.join(base, path).to_s
   end
 
-  def forme(model, options={}, &block)
-    options[:wrapper] = :div
-    options[:inputs_wrapper] = :div
-    options[:input_defaults] = TailwindConfig.input_defaults
-    options[:label_attr] = TailwindConfig.label_attr
-    options[:before] = TailwindConfig.before
-    options[:after] = TailwindConfig.after
-    options[:labeler] = :explicit
-    PP.pp(options)
-    Forme.form(model, {}, options, &block)
+  def edit_forme(model, attributes={}, options={}, &block)
+    merged_options = TailwindConfig.options.merge(options)
+    attributes[:method] = :post
+    merged_options[:before] = -> (form) {
+      TailwindConfig.before.call(form)
+      form.to_s << '<input name="_method" value="patch" type="hidden"/>'
+    }
+    Forme.form(model, attributes, merged_options, &block)
+  end
+
+  def forme(model, attributes={}, options={}, &block)
+    attributes[:method] = :post
+    merged_options = TailwindConfig.options.merge(options)
+    Forme.form(model, attributes, merged_options, &block)
   end
 end
 
+get '/' do
+  @page_title = "Index"
+  erb :"index"
+end
 
 # DEVICE MANAGEMENT
 get '/devices/?' do
   @devices = Device.all
+  @page_title = "Register a device"
   erb :"devices/index"
 end
 
 get '/devices/new' do
   @device = Device.new
+  @page_title = "Devices"
   erb :"devices/new"
 end
 
@@ -75,6 +85,7 @@ end
 
 get '/devices/:id/edit' do
   @device = Device.find(params[:id])
+  @page_title = "Edit " + @device.name
   erb :"devices/edit"
 end
 
@@ -97,6 +108,7 @@ end
 
 get '/schedules/new' do
   @schedule = Schedule.new
+  @page_title = "Create a schedule"
   erb :"schedules/new"
 end
 
