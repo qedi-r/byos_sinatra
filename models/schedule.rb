@@ -1,32 +1,6 @@
 class Schedule < ActiveRecord::Base
-  belongs_to :device
-
-  # Validations
-  validates :start_time, :end_time, presence: true
-  validates :interruptible, inclusion: { in: [true, false] }
-  validates :update_frequency, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
-
-  validate :end_time_after_start_time
-  validate :update_frequency
-
-  # Custom validation to ensure end_time is after start_time
-  def end_time_after_start_time
-    if end_time <= start_time
-      errors.add(:end_time, "must be after the start time")
-    end
-  end
-
-  def update_frequency
-    [15,30,45,60,120,240].include?(update_frequency)
-  end
-
-  # Helper to return plugins as an array
-  def plugins_list
-    plugins.split(',').map(&:strip)
-  end
-
-  # Helper to set plugins from an array
-  def plugins_list=(list)
-    self.plugins = list.join(',')
-  end
+  has_many :schedule_events 
+  has_many :events, through: :schedule_events
+  has_many :active_schedules
+  has_many :devices, through: :active_schedules
 end

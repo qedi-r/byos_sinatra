@@ -5,7 +5,7 @@
 </div>
 
 <div class="flex flex-col overflow-hidden rounded-xl border border-gray-300 bg-gray-50">
-  <% @schedules.each do |schedule| %>
+  <% @schedule_event.each do |schedule| %>
     <div class="flex border-b last:border-b-0 border-gray-100 transition hover:bg-white dark:hover:bg-gray-750 dark:border-gray-700" data-turbo="false" href="/schedules/<%= device.id %>/edit">
       <div class="flex grow flex-row items-center justify-between px-5 py-5">
         <div>

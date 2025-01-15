@@ -57,6 +57,13 @@ helpers do
     merged_options = TailwindConfig.options.merge(options)
     Forme.form(model, attributes, merged_options, &block)
   end
+
+  def explicit_forme(model, attributes={}, options={})
+    attributes[:method] = :post
+    merged_options = TailwindConfig.options.merge(options)
+    (f, attrs, b) = Forme::Form.form_args(model, attributes, merged_options)
+    return f
+  end
 end
 
 get '/' do
@@ -103,34 +110,48 @@ end
 # SCHEDULE MANAGEMENT
 get '/schedules/?' do
   @schedules = Schedule.all
-  erb :"schedules/index"
+  @page_title = "Current schedules"
+  erb :"schedule/index"
 end
 
 get '/schedules/new' do
   @schedule = Schedule.new
+  @page_title = "Create a new schedule"
+  erb :"schedule/new"
+end
+
+## SCHEDULE EVENTS
+get '/schedule_event/?' do
+  @schedule_event = ScheduleEvent.all
+  @page_title = "Current schedule events"
+  erb :"schedule_event/index"
+end
+
+get '/schedule_event/new' do
+  @schedule_event = ScheduleEvent.new
   @page_title = "Create a schedule"
-  erb :"schedules/new"
+  erb :"schedule_event/new"
 end
 
-get '/schedules/:id/delete' do
-  @schedule = Schedule.find(params[:id])
-  @schedule.destroy
-  redirect to('/schedules')
+get '/schedule_event/:id/delete' do
+  @schedule_event = ScheduleEvent.find(params[:id])
+  @schedule_event.destroy
+  redirect to('/schedule_event')
 end
 
-get '/schedules/:id/edit' do
-  @schedule = Schedule.find(params[:id])
-  erb :"schedules/edit"
+get '/schedule_event/:id/edit' do
+  @schedule_event = ScheduleEvent.find(params[:id])
+  erb :"schedule_event/edit"
 end
 
-patch '/schedules/:id' do
-  device = Schedule.find(params[:id])
+patch '/schedule_event/:id' do
+  device = ScheduleEvent.find(params[:id])
   device.update(params[:schedule])
-  redirect to('/schedules')
+  redirect to('/schedule_event')
 end
 
-post '/schedules' do
-  Schedule.create!(params[:schedule])
+post '/schedule_event' do
+  ScheduleEvent.create!(params[:schedule])
   redirect to('/kevices')
 end
 

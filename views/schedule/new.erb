@@ -1,0 +1,18 @@
+<% f = explicit_forme(@schedule, {}, {action: '/schedules'}) %>
+    <%= f.input :name, label: "Schedule name" %>
+    <%= f.input :default_plugin, label: "Default plugin" %>
+
+    <h2>Schedule Events</h2>
+    <div id="schedule-events">
+    <div class="schedule-event">
+        <%= f.input(, label: "Start Time:", type: :datetime_local, required: true) %>
+        <%# f.input(:end_time, label: "End Time:", type: :datetime_local, required: true) %>
+        <%# f.input(:interruptible, label: "Interruptible:", type: :checkbox) %>
+        <%# f.input(:plugins, label: "Plugins:", type: :text) %>
+        <%# f.input(:update_frequency, label: "Update Frequency:", type: :number) %>
+    </div>
+    </div>
+
+    <button type="button" onclick="addScheduleEvent()">Add Another Event</button>
+
+    <%= f.button 'Create Schedule' %>
