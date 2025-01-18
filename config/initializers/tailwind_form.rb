@@ -33,6 +33,12 @@ module TailwindConfig
           class: 'block mt-2 min-h-12 px-4 rounded-xl text-black bg-white block w-full p-0 outline-none text-sm border border-gray-300 focus:outline-none ring-2 ring-transparent focus:ring-2 ring-offset-gray-200 focus:ring-offset-2 focus:ring-offset-gray-200 focus:ring-blue-500 focus:border-transparent transition duration-150' ,
         },
 
+        number: {
+          label_attr: self.label_attr,
+          wrapper_attr: { class: 'p-6' },
+          class: 'block mt-2 min-h-12 px-4 rounded-xl text-black bg-white block w-full p-0 outline-none text-sm border border-gray-300 focus:outline-none ring-2 ring-transparent focus:ring-2 ring-offset-gray-200 focus:ring-offset-2 focus:ring-offset-gray-200 focus:ring-blue-500 focus:border-transparent transition duration-150' ,
+        },
+
         time: {
           label_attr: self.label_attr,
           wrapper_attr: { class: 'p-6' },

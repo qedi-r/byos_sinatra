@@ -5,6 +5,7 @@ require 'debug'
 require 'pp'
 
 require_relative 'config/initializers/tailwind_form'
+require_relative 'config/initializers/subform'
 
 current_dir = Dir.pwd
 Dir["#{current_dir}/models/*.rb"].each { |file| require file } # require models
@@ -58,10 +59,12 @@ helpers do
     Forme.form(model, attributes, merged_options, &block)
   end
 
-  def explicit_forme(model, attributes={}, options={})
+  def form_with_subform(model, attributes={}, options={})
     attributes[:method] = :post
-    merged_options = TailwindConfig.options.merge(options)
-    (f, attrs, b) = Forme::Form.form_args(model, attributes, merged_options)
+    merged_options = TailwindConfig.options
+      .merge(options)
+    (f, ) = Forme::Form.form_args(model, attributes, merged_options)
+    f.extend(SubformsPlugin)
     return f
   end
 end
