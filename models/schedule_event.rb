@@ -2,7 +2,8 @@ class ScheduleEvent < ActiveRecord::Base
   belongs_to :schedules
 
   # Validations
-  validates :start_time, :end_time, presence: true
+  validates :start_time, presence: true
+  validates :end_time, presence: true
   validates :interruptible, inclusion: { in: [true, false] }
   validates :update_frequency, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
 
@@ -11,6 +12,7 @@ class ScheduleEvent < ActiveRecord::Base
 
   # Custom validation to ensure end_time is after start_time
   def end_time_after_start_time
+    binding.break
     if end_time <= start_time
       errors.add(:end_time, "must be after the start time")
     end

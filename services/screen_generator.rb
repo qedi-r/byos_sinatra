@@ -14,7 +14,7 @@ class ScreenGenerator
 
   def process
     convert_to_image
-    image ? mono_image(output) : mono(output)
+    mono_image(output)
     IO.copy_stream(output, img_path)
   end
 
@@ -111,17 +111,20 @@ class ScreenGenerator
     MiniMagick::Tool::Convert.new do |m|
       m << img.path
       m.dither << 'FloydSteinberg'
+      m.define << 'dither:diffusion-amount=45'
       m.remap << 'pattern:gray50'
       m.depth(color_depth) # Should be set to 1 for 1-bit output
       m.strip # Remove any additional metadata
       m << ('bmp3:' << img.path) # Converts to Bitmap.
     end
+  end
+
+  def resize_image(img)
     MiniMagick::Tool::Convert.new do |m|
       m << img.path
-      m.dither << 'FloydSteinberg'
-      m.remap << 'pattern:gray50'
-      m.depth(color_depth) # Should be set to 1 for 1-bit output
-      m.strip # Remove any additional metadata
+      m.resize << sprtinf('%dx%d^', self.width, self.height)
+      m.gravity << 'center'
+      m.extent << sprtinf('%dx%d', self.width, self.height)
       m << ('bmp3:' << img.path) # Converts to Bitmap.
     end
   end

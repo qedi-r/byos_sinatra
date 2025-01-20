@@ -1,11 +1,12 @@
-<% f = form_with_subform(@schedule, {}, {action: '/schedules'}) %>
+<% f = form_with_subform(@schedule, {namespace:"schedule"}) %>
+<%= f.open({action: '/schedules', method: 'post'}) %>
     <%= f.input :name, label: "Schedule name" %>
     <%= f.input :default_plugin, label: "Default plugin" %>
 
     <h2>Schedule Events</h2>
     <div id="schedule-events">
         <div class="schedule-event">
-        <%= sf = f.subform(:schedule_events, { id: 1 }) %>
+            <%= sf = f.subform(:schedule_events, { id: 1 }) %>
             <%= sf.input(:start_time, label: "Start Time:", type: :time, required: true) %>
             <%= sf.input(:end_time, label: "End Time:", type: :time, required: true) %>
             <%= sf.input(:interruptible, label: "Interruptible:", type: :checkbox) %>
@@ -16,4 +17,5 @@
 
     <button type="button" onclick="addScheduleEvent()">Add Another Event</button>
 
-<%= f.button 'Create Schedule' %>
+    <%= f.button 'Create Schedule' %>
+<%= f.close() %>

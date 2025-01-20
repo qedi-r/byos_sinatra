@@ -53,17 +53,16 @@ helpers do
     Forme.form(model, attributes, merged_options, &block)
   end
 
-  def forme(model, attributes={}, options={}, &block)
-    attributes[:method] = :post
+  def forme(model, options={})
     merged_options = TailwindConfig.options.merge(options)
-    Forme.form(model, attributes, merged_options, &block)
+    f = Forme::Form.new(model, merged_options)
+    return f
   end
 
-  def form_with_subform(model, attributes={}, options={})
-    attributes[:method] = :post
+  def form_with_subform(model, options={})
     merged_options = TailwindConfig.options
       .merge(options)
-    (f, ) = Forme::Form.form_args(model, attributes, merged_options)
+    (f, ) = Forme::Form.new(model, merged_options)
     f.extend(SubformsPlugin)
     return f
   end
@@ -112,7 +111,9 @@ end
 
 # SCHEDULE MANAGEMENT
 get '/schedules/?' do
+  @active_schedules = ActiveSchedule.all
   @schedules = Schedule.all
+  @devices = Device.all
   @page_title = "Current schedules"
   erb :"schedule/index"
 end
@@ -153,9 +154,27 @@ patch '/schedule_event/:id' do
   redirect to('/schedule_event')
 end
 
-post '/schedule_event' do
-  ScheduleEvent.create!(params[:schedule])
-  redirect to('/kevices')
+post '/schedules' do
+  schedule_params = params[:schedule]
+  new_schedule = Schedule.create!(schedule_params)
+  schedule_events_params = params[:schedule_events]
+  schedule_events_params.each_value do |sep|
+    binding.break
+    PP.pp(sep)
+    new_schedule.schedule_events.create!(sep)
+  end
+  redirect to('/schedules')
+end
+
+post '/schedules/activate' do
+  device = Device.find(params[:device])
+  schedule = Schedule.find(params[:device])
+  binding.break
+  ActiveSchedule.create!({
+    device: device,
+    schedule: schedule
+  })
+  redirect to('/schedules')
 end
 
 # FIRMWARE SETUP

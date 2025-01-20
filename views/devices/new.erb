@@ -1,7 +1,8 @@
-<%= forme(@device, {action: '/devices'}, {namespace: "device"}) do |f|
-    f.input :name, label: "Name", placeholder: "My TRMNL"
-    f.input :mac_address, label: "MAC Address", placeholder: "xx:xx:xx:xx:xx:xx"
+<% f = forme(@device, {namespace: "device"}) %>
+<%= f.open({ action: "/devices", method: "post" }) %>
+    <%= f.input :name, label: "Name", placeholder: "My TRMNL" %>
+    <%= f.input :mac_address, label: "MAC Address", placeholder: "xx:xx:xx:xx:xx:xx" %>
 
-    f.button 'Save'
-  end
-%>
+    <%= f.button 'Save' %>
+
+<%= f.close() %>

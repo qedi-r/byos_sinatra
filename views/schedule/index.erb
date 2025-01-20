@@ -1,24 +1,79 @@
 <div>
-  <a href="/schedule/new" class="cursor-pointer font-medium rounded-lg text-sm px-3 py-2 inline-flex items-center transition duration-150 justify-center shrink-0 gap-1.5 whitespace-nowrap text-white bg-blue-500 hover:bg-blue-600 focus:outline-none">
-    Add New
+  <a href="/schedules/new" class="cursor-pointer font-medium rounded-lg text-sm px-3 py-2 inline-flex items-center transition duration-150 justify-center shrink-0 gap-1.5 whitespace-nowrap text-white bg-blue-500 hover:bg-blue-600 focus:outline-none">
+    Add new schedule
   </a>
 </div>
 
+<div class="my-4">
+  <div class="flex mb-4">
+    <div class="flex flex-grow items-center">
+      <div class="flex flex-col">
+        <h2 class="font-medium text-gray-900 text-lg md:text-2xl mb-0.5 leading-none">Active schedules</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="flex flex-col overflow-hidden rounded-xl border border-gray-300 bg-gray-50">
-  <% @schedules.each do |schedule| %>
-    <div class="flex border-b last:border-b-0 border-gray-100 transition hover:bg-white dark:hover:bg-gray-750 dark:border-gray-700" data-turbo="false" href="/schedules/<%= device.id %>/edit">
+  <% @active_schedules && @active_schedules.each do |active_schedule| %>
+    <div class="flex border-b last:border-b-0 border-gray-100 transition hover:bg-white dark:hover:bg-gray-750 dark:border-gray-700" data-turbo="false"> 
       <div class="flex grow flex-row items-center justify-between px-5 py-5">
         <div>
-          <h3 class="font-medium text-gray-900"><%= device.name %></h3>
           <div class="text-sm">
-            <p>Device ID: <%= schedule.device.friendly_id %></p>
-            <p>Events: <%= schedule.events.plugins %></p>
+            <p>Device ID: <%= active_schedule.device && active_schedule.device.friendly_id %></p>
+            <p>Schedule ID: <%= active_schedule.schedule && active_schedule.schedule.id %></p>
           </div>
         </div>
         <div class="">
-          <a href="/schedules/<%= device.id %>/delete" class="font-medium text-red-500 rounded-lg text-xs px-2 py-1 inline-flex items-center transition duration-150 justify-center shrink-0 gap-1.5 whitespace-nowrap text-primary-500 bg-primary-100 dark:bg-primary-900 hover:bg-primary-200 dark:hover:bg-primary-800 focus:outline-none">Delete</a>
-          <a href="/schedules/<%= device.id %>/edit" class="font-medium text-blue-500 rounded-lg text-xs px-2 py-1 inline-flex items-center transition duration-150 justify-center shrink-0 gap-1.5 whitespace-nowrap text-primary-500 bg-primary-100 dark:bg-primary-900 hover:bg-primary-200 dark:hover:bg-primary-800 focus:outline-none">Edit</a>
+          <a href="/schedules/<%= active_schedule.id %>/delete" class="font-medium text-red-500 rounded-lg text-xs px-2 py-1 inline-flex items-center transition duration-150 justify-center shrink-0 gap-1.5 whitespace-nowrap text-primary-500 bg-primary-100 dark:bg-primary-900 hover:bg-primary-200 dark:hover:bg-primary-800 focus:outline-none">Delete</a>
         </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="my-4">
+  <div class="flex mb-4">
+    <div class="flex flex-grow items-center">
+      <div class="flex flex-col">
+        <h2 class="font-medium text-gray-900 text-lg md:text-2xl mb-0.5 leading-none">All schedules</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex flex-col overflow-hidden rounded-xl border border-gray-300 bg-gray-50">
+  <% @schedules && @schedules.each do |schedule| %>
+    <div class="flex flex-col border-b last:border-b-0 border-gray-100 transition hover:bg-white dark:hover:bg-gray-750 dark:border-gray-700" 
+         data-turbo="false" href="/schedules/<%= schedule.id %>/edit">
+      <div class="flex border-b grow flex-row items-center justify-between px-5 py-5">
+        <div>
+          <div class="text-sm">
+            <p>Schedule ID: <%= schedule.id %></p>
+          </div>
+        </div>
+        <div class="">
+          <a class="font-medium text-red-500 rounded-lg text-xs px-2 py-1 inline-flex items-center transition duration-150 justify-center shrink-0 gap-1.5 whitespace-nowrap text-primary-500 bg-primary-100 dark:bg-primary-900 hover:bg-primary-200 dark:hover:bg-primary-800 focus:outline-none"
+              href="/schedules/<%= schedule.id %>/delete">Delete</a>
+          <a class="font-medium text-blue-500 rounded-lg text-xs px-2 py-1 inline-flex items-center transition duration-150 justify-center shrink-0 gap-1.5 whitespace-nowrap text-primary-500 bg-primary-100 dark:bg-primary-900 hover:bg-primary-200 dark:hover:bg-primary-800 focus:outline-none"
+              href="/schedules/<%= schedule.id %>/edit">Edit</a>
+        </div>
+      </div>
+      <div class="flex border-b grow flex-row items-center justify-between px-5 py-5">
+          <% dl_form = forme(nil) %>
+            <div class="flex">
+              <%= dl_form.open({method: "post", action: "/schedules/activate"}) %>
+              <input type="hidden" name="schedule" value="<%= schedule.id %>">
+              <%= dl_form.button(value: 'Activate on device', wrapper: nil) %>
+            </div>
+            <div class="flex grow px-10 items-left">
+              <select name="device" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <% @devices && @devices.each do |device| %>
+                  <option value="<%= device.id %>"><%= device.name %> (<%= device.friendly_id %>)</option>
+                <% end %>
+              </select>
+            </div>
+          <%= dl_form.close() %>
       </div>
     </div>
   <% end %>
