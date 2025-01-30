@@ -161,6 +161,10 @@ post '/schedules/activate' do
   redirect to('/schedules')
 end
 
+get '/' do
+  erb :"index"
+end
+
 # FIRMWARE SETUP
 get '/api/setup/' do
   content_type :json
